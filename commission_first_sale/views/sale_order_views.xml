@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Heredar vista form de sale.order.line para añadir campo agent_id -->
+    <record id="view_order_form_inherit_commission" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit.commission.first.sale</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form" />
+        <field name="arch" type="xml">
+            <!-- Añadir columna de agente en las líneas de pedido -->
+            <xpath expr="//field[@name='order_line']/list//field[@name='product_uom_qty']"
+                position="after">
+                <field name="agent_id" string="Agente" optional="show"
+                    options="{'no_create': True}" />
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Heredar vista tree de sale.order.line si existe vista separada -->
+    <record id="view_order_line_tree_inherit_commission" model="ir.ui.view">
+        <field name="name">sale.order.line.tree.inherit.commission.first.sale</field>
+        <field name="model">sale.order.line</field>
+        <field name="inherit_id" ref="sale.view_sales_order_line_filter" />
+        <field name="arch" type="xml">
+            <!-- Añadir filtro por agente en líneas de pedido -->
+            <xpath expr="//search" position="inside">
+                <field name="agent_id" />
+                <filter name="group_by_agent" string="Agente" context="{'group_by': 'agent_id'}" />
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista Tree para commission.first.sale -->
+    <record id="view_commission_first_sale_tree" model="ir.ui.view">
+        <field name="name">commission.first.sale.tree</field>
+        <field name="model">commission.first.sale</field>
+        <field name="arch" type="xml">
+            <list string="Vínculos de Primera Venta">
+                <field name="partner_id" />
+                <field name="product_id" />
+                <field name="agent_id" />
+                <field name="first_sale_date" />
+                <field name="source" />
+                <field name="origin" />
+            </list>
+        </field>
+    </record>
+
+    <!-- Vista Form para commission.first.sale -->
+    <record id="view_commission_first_sale_form" model="ir.ui.view">
+        <field name="name">commission.first.sale.form</field>
+        <field name="model">commission.first.sale</field>
+        <field name="arch" type="xml">
+            <form string="Vínculo de Primera Venta">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="display_name" readonly="1" />
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Información del Vínculo">
+                            <field name="partner_id" />
+                            <field name="product_id" />
+                            <field name="agent_id" />
+                        </group>
+                        <group string="Detalles">
+                            <field name="first_sale_date" />
+                            <field name="source" />
+                            <field name="origin" />
+                            <field name="company_id" groups="base.group_multi_company" />
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vista Search para commission.first.sale -->
+    <record id="view_commission_first_sale_search" model="ir.ui.view">
+        <field name="name">commission.first.sale.search</field>
+        <field name="model">commission.first.sale</field>
+        <field name="arch" type="xml">
+            <search string="Buscar Vínculos">
+                <field name="partner_id" />
+                <field name="product_id" />
+                <field name="agent_id" />
+                <separator />
+                <filter name="filter_sale" string="Desde Ventas" domain="[('source', '=', 'sale')]" />
+                <filter name="filter_pos" string="Desde POS" domain="[('source', '=', 'pos')]" />
+                <filter name="filter_manual" string="Manual" domain="[('source', '=', 'manual')]" />
+                <separator />
+                <group expand="0" string="Agrupar por">
+                    <filter name="group_agent" string="Agente" context="{'group_by': 'agent_id'}" />
+                    <filter name="group_partner" string="Cliente"
+                        context="{'group_by': 'partner_id'}" />
+                    <filter name="group_product" string="Producto"
+                        context="{'group_by': 'product_id'}" />
+                    <filter name="group_source" string="Fuente" context="{'group_by': 'source'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Acción para ver vínculos de primera venta (sin search_view_id para evitar problemas) -->
+    <record id="action_commission_first_sale" model="ir.actions.act_window">
+        <field name="name">Vínculos de Primera Venta</field>
+        <field name="res_model">commission.first.sale</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No hay vínculos de primera venta registrados
+            </p>
+            <p>
+                Los vínculos se crean automáticamente cuando un vendedor vende un producto
+                a un cliente por primera vez. El vendedor se convierte en el dueño permanente
+                de la comisión para ese producto-cliente.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menú en Ventas > Informes -->
+    <menuitem
+        id="menu_commission_first_sale"
+        name="Comisiones Primera Venta"
+        parent="sale.sale_report_root"
+        action="action_commission_first_sale"
+        sequence="99" />
+
+</odoo>

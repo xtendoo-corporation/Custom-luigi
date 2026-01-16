@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Heredar vista form de res.partner para añadir smart button -->
+    <record id="view_partner_form_inherit_commission" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit.commission.first.sale</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form" />
+        <field name="arch" type="xml">
+            <!-- Añadir smart button para ver vínculos de primera venta -->
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_first_sale_commissions"
+                    type="object"
+                    class="oe_stat_button"
+                    icon="fa-link"
+                    invisible="first_sale_commission_count == 0">
+                    <field name="first_sale_commission_count" widget="statinfo" string="Comisiones" />
+                </button>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- También heredar la vista kanban para mostrar información adicional si es necesario -->
+
+</odoo>

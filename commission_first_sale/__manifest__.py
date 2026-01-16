@@ -1,20 +1,32 @@
-# -*- coding: utf-8 -*-
 {
-    'name': 'Commission First Sale',
-    'version': '19.0.1.0.0',
-    'summary': 'Assign commission to the first seller who sold a product to a partner (Sales & POS backend)',
-    'description': """
-Module to track the first seller (user) who sold a specific product to a specific customer.
-Once recorded, future sales of that product to the same customer attribute commission to that original user.
-Works for Sales and POS backend (pos.order create in backend).
-""",
-    'author': 'Guillermo Bárcena',
-    'category': 'Sales',
-    'depends': ['base', 'sale_management', 'point_of_sale', 'xtendoo_pos_conventional' if False else 'pos_conventional'],
-    'data': [
-        'security/ir.model.access.csv',
+    "name": "Comisión Primera Venta",
+    "version": "19.0.1.0.0",
+    "category": "Sales/Commission",
+    "summary": "Asigna comisiones permanentes al primer vendedor que vende un producto a un cliente",
+    "description": """
+        Módulo de comisiones basado en la regla de "Primera Venta":
+        - El primer vendedor que vende un producto a un cliente se convierte en su dueño permanente
+        - Las futuras ventas del mismo producto al mismo cliente mantienen al agente original
+        - Funciona tanto en Ventas (sale.order) como en TPV (pos.order)
+        - Compatible con pos_conventional
+    """,
+    "author": "Guillermo Barcena López",
+    "website": "https://www.xtendoo.es",
+    "license": "AGPL-3",
+    "depends": [
+        "base",
+        "sale",
+        "point_of_sale",
+        "pos_conventional",
     ],
-    'installable': True,
-    'application': False,
-    'license': 'AGPL-3',
+    "data": [
+        "security/ir.model.access.csv",
+        "views/commission_first_sale_views.xml",
+        "views/res_partner_views.xml",
+        "views/sale_order_views.xml",
+        "views/pos_order_views.xml",
+    ],
+    "installable": True,
+    "application": False,
+    "auto_install": False,
 }
