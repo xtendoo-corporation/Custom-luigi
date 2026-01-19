@@ -26,6 +26,8 @@
         "views/res_partner_views.xml",
         "views/sale_order_views.xml",
         "views/pos_order_views.xml",
+        "views/hr_employee_views.xml",
+        "views/commission_sales_report_views.xml",
     ],
     "installable": True,
     "application": False,

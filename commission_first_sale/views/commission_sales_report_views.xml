@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista Pivot -->
+    <record id="view_commission_sales_report_pivot" model="ir.ui.view">
+        <field name="name">commission.sales.report.pivot</field>
+        <field name="model">commission.sales.report</field>
+        <field name="arch" type="xml">
+            <pivot string="Conteo de Comisiones" sample="1">
+                <field name="date" interval="month" type="col" />
+                <field name="agent_id" type="row" />
+                <field name="amount" type="measure" />
+                <field name="qty" type="measure" />
+            </pivot>
+        </field>
+    </record>
+
+    <!-- Vista Graph -->
+    <record id="view_commission_sales_report_graph" model="ir.ui.view">
+        <field name="name">commission.sales.report.graph</field>
+        <field name="model">commission.sales.report</field>
+        <field name="arch" type="xml">
+            <graph string="Conteo de Comisiones" sample="1">
+                <field name="agent_id" />
+                <field name="amount" type="measure" />
+            </graph>
+        </field>
+    </record>
+
+    <!-- Vista List (Tree) -->
+    <record id="view_commission_sales_report_tree" model="ir.ui.view">
+        <field name="name">commission.sales.report.list</field>
+        <field name="model">commission.sales.report</field>
+        <field name="arch" type="xml">
+            <list string="Conteo de Comisiones" create="false" edit="false" delete="false">
+                <field name="date" />
+                <field name="agent_id" />
+                <field name="partner_id" />
+                <field name="product_id" optional="show" />
+                <field name="origin" optional="show" />
+                <field name="source" optional="hide" />
+                <field name="qty" optional="show" sum="Total Cantidad" />
+                <field name="amount" sum="Total Ventas" />
+                <field name="company_id" groups="base.group_multi_company" optional="hide" />
+            </list>
+        </field>
+    </record>
+
+    <!-- Vista Search -->
+    <record id="view_commission_sales_report_search" model="ir.ui.view">
+        <field name="name">commission.sales.report.search</field>
+        <field name="model">commission.sales.report</field>
+        <field name="arch" type="xml">
+            <search string="Conteo de Comisiones">
+                <field name="agent_id" />
+                <field name="partner_id" />
+                <field name="product_id" />
+            </search>
+        </field>
+    </record>
+
+    <!-- Acción -->
+    <record id="action_commission_sales_report" model="ir.actions.act_window">
+        <field name="name">Conteo de Comisiones</field>
+        <field name="res_model">commission.sales.report</field>
+        <field name="view_mode">list,pivot,graph</field>
+        <field name="context">{'search_default_group_agent': 0}</field>
+    </record>
+
+    <!-- Menú -->
+    <menuitem
+        id="menu_commission_sales_report"
+        name="Conteo de Comisiones"
+        parent="sale.menu_sale_report"
+        action="action_commission_sales_report"
+        sequence="100" />
+</odoo>
