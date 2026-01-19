@@ -8,8 +8,11 @@
         <field name="arch" type="xml">
             <!-- Añadir columna de agente en las líneas de pedido -->
             <xpath expr="//field[@name='order_line']/list//field[@name='product_uom_qty']"
-                position="after">
+                position="before">
+                <field name="is_commission_locked" column_invisible="True" />
                 <field name="agent_id" string="Agente" optional="show"
+                    readonly="is_commission_locked"
+                    force_save="1"
                     options="{'no_create': True}" />
             </xpath>
         </field>

@@ -12,11 +12,31 @@ class SaleOrderLine(models.Model):
     _inherit = "sale.order.line"
 
     agent_id = fields.Many2one(
-        "res.users",
+        "hr.employee",
         string="Agente de Comisión",
-        help="Agente asignado para recibir la comisión de esta línea. "
+        help="Empleado asignado para recibir la comisión de esta línea. "
         "Se asigna automáticamente si ya existe un vínculo de primera venta.",
     )
+    is_commission_locked = fields.Boolean(
+        string="Comisión Bloqueada",
+        compute="_compute_is_commission_locked",
+        store=True,
+        help="Indica si el agente ya está fijado por un vínculo existente.",
+    )
+
+    @api.depends("product_id", "order_id.partner_id")
+    def _compute_is_commission_locked(self):
+        Commission = self.env["commission.first.sale"]
+        for line in self:
+            if line.product_id and line.order_id.partner_id:
+                existing_agent = Commission.get_agent_for_product(
+                    line.order_id.partner_id.id, line.product_id.id
+                )
+                line.is_commission_locked = bool(existing_agent)
+                if existing_agent:
+                    line.agent_id = existing_agent
+            else:
+                line.is_commission_locked = False
 
     @api.onchange("product_id", "order_id")
     def _onchange_product_check_agent(self):
@@ -40,6 +60,9 @@ class SaleOrderLine(models.Model):
                         % existing_agent.name,
                     }
                 }
+            # Si no existe, intentar asignar el empleado del usuario actual por defecto
+            elif not self.agent_id and self.env.user.employee_id:
+                self.agent_id = self.env.user.employee_id
 
 
 class SaleOrder(models.Model):
@@ -77,7 +100,14 @@ class SaleOrder(models.Model):
                 continue
 
             # Buscar o crear vínculo
-            agent_to_use = line.agent_id or self.user_id
+            # Intentar usar el agente de la línea, o el empleado asociado al usuario del pedido
+            agent_to_use = line.agent_id
+            if not agent_to_use and self.user_id:
+                # Buscar empleado del usuario del pedido
+                employee = self.env["hr.employee"].search(
+                    [("user_id", "=", self.user_id.id)], limit=1
+                )
+                agent_to_use = employee
 
             if not agent_to_use:
                 continue
@@ -104,3 +134,36 @@ class SaleOrder(models.Model):
                 elif is_new:
                     # Asegurar que la línea tiene el agente correcto
                     line.agent_id = commission.agent_id
+
+    @api.onchange("partner_id")
+    def _onchange_partner_id_update_commissions(self):
+        """
+        Al cambiar el cliente, re-evaluar todas las líneas para actualizar agentes.
+        """
+        if not self.partner_id:
+            return
+
+        Commission = self.env["commission.first.sale"]
+        # Buscar empleado del usuario actual por si hay que resetear
+        current_employee = self.env["hr.employee"].search(
+            [("user_id", "=", self.env.user.id)], limit=1
+        )
+
+        for line in self.order_line:
+            if not line.product_id:
+                continue
+
+            existing_agent = Commission.get_agent_for_product(
+                self.partner_id.id, line.product_id.id
+            )
+
+            if existing_agent:
+                line.agent_id = existing_agent
+            else:
+                # Si no existe vínculo con el nuevo cliente, asignar el agente por defecto (empleado actual)
+                # O mantener el que estaba si no estaba bloqueado?
+                # Mejor comportamiento: resetear para evitar datos del cliente anterior.
+                line.agent_id = current_employee
+
+            # Forzar recomputo de bloqueo
+            line._compute_is_commission_locked()

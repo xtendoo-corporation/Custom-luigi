@@ -18,8 +18,10 @@
         "sale",
         "point_of_sale",
         "pos_conventional",
+        "hr",
     ],
     "data": [
+        "security/ir.model.access.csv",
         "views/commission_first_sale_views.xml",
         "views/res_partner_views.xml",
         "views/sale_order_views.xml",

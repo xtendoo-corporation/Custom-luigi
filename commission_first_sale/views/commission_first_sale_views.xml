@@ -11,7 +11,6 @@
                 <field name="agent_id" />
                 <field name="first_sale_date" />
                 <field name="source" />
-                <field name="origin" />
             </list>
         </field>
     </record>
@@ -37,7 +36,6 @@
                         <group string="Detalles">
                             <field name="first_sale_date" />
                             <field name="source" />
-                            <field name="origin" />
                             <field name="company_id" groups="base.group_multi_company" />
                         </group>
                     </group>

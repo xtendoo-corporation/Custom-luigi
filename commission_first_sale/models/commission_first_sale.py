@@ -36,12 +36,12 @@ class CommissionFirstSale(models.Model):
         help="Producto vendido",
     )
     agent_id = fields.Many2one(
-        "res.users",
+        "hr.employee",
         string="Agente",
         required=True,
         index=True,
         ondelete="restrict",
-        help="Vendedor dueño de la comisión para este producto-cliente",
+        help="Empleado dueño de la comisión para este producto-cliente",
     )
     first_sale_date = fields.Datetime(
         string="Fecha de Primera Venta",
@@ -161,7 +161,7 @@ class CommissionFirstSale(models.Model):
             product_id: ID del producto
 
         Returns:
-            res.users record o False
+            hr.employee record o False
         """
         if not partner_id or not product_id:
             return False
