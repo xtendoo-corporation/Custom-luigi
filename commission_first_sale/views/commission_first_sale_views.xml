@@ -55,19 +55,6 @@
                 <field name="partner_id" />
                 <field name="product_id" />
                 <field name="agent_id" />
-                <separator />
-                <filter name="filter_sale" string="Desde Ventas" domain="[('source', '=', 'sale')]" />
-                <filter name="filter_pos" string="Desde POS" domain="[('source', '=', 'pos')]" />
-                <filter name="filter_manual" string="Manual" domain="[('source', '=', 'manual')]" />
-                <separator />
-                <group expand="0" string="Agrupar por">
-                    <filter name="group_agent" string="Agente" context="{'group_by': 'agent_id'}" />
-                    <filter name="group_partner" string="Cliente"
-                        context="{'group_by': 'partner_id'}" />
-                    <filter name="group_product" string="Producto"
-                        context="{'group_by': 'product_id'}" />
-                    <filter name="group_source" string="Fuente" context="{'group_by': 'source'}" />
-                </group>
             </search>
         </field>
     </record>
@@ -93,7 +80,7 @@
     <menuitem
         id="menu_commission_first_sale"
         name="Comisiones Primera Venta"
-        parent="sale.sale_report_root"
+        parent="sale.menu_sale_report"
         action="action_commission_first_sale"
         sequence="99" />
 
